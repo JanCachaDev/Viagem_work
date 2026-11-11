@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vf:VymennyFormat xmlns:gml="http://www.opengis.net/gml/3.2"
+                  xmlns:com="urn:cz:isvs:ruian:schemas:CommonTypy:v1"
+                  xmlns:kui="urn:cz:isvs:ruian:schemas:KatUzIntTypy:v1"
+                  xmlns:obi="urn:cz:isvs:ruian:schemas:ObecIntTypy:v1"
+                  xmlns:oki="urn:cz:isvs:ruian:schemas:OkresIntTypy:v1"
+                  xmlns:pai="urn:cz:isvs:ruian:schemas:ParcelaIntTypy:v1"
+                  xmlns:vf="urn:cz:isvs:ruian:schemas:VymennyFormatTypy:v1">
+  <vf:Data>
+    <vf:Obce>
+      <vf:Obec gml:id="OB.572659">
+        <obi:Kod>572659</obi:Kod><obi:Nazev>Jičín</obi:Nazev>
+        <obi:Okres><oki:Kod>3604</oki:Kod></obi:Okres>
+      </vf:Obec>
+    </vf:Obce>
+    <vf:KatastralniUzemi>
+      <vf:KatastralniUzemi gml:id="KU.659541">
+        <kui:Kod>659541</kui:Kod><kui:Nazev>Jičín</kui:Nazev>
+        <kui:Obec><obi:Kod>572659</obi:Kod></kui:Obec>
+        <kui:Geometrie>
+          <kui:DefinicniBod><gml:MultiPoint><gml:pointMembers><gml:Point><gml:pos>5 5</gml:pos></gml:Point></gml:pointMembers></gml:MultiPoint></kui:DefinicniBod>
+          <kui:OriginalniHranice><gml:MultiSurface><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>0 0 10 0 10 10 0 0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface></kui:OriginalniHranice>
+        </kui:Geometrie>
+      </vf:KatastralniUzemi>
+    </vf:KatastralniUzemi>
+    <vf:Parcely>
+      <vf:Parcela gml:id="PA.100">
+        <pai:Id>100</pai:Id><pai:KmenoveCislo>1854</pai:KmenoveCislo><pai:PododdeleniCisla>42</pai:PododdeleniCisla>
+        <pai:VymeraParcely>1537</pai:VymeraParcely><pai:ZpusobyVyuzitiPozemku>23</pai:ZpusobyVyuzitiPozemku>
+        <pai:DruhCislovaniKod>2</pai:DruhCislovaniKod><pai:DruhPozemkuKod>2</pai:DruhPozemkuKod>
+        <pai:KatastralniUzemi><kui:Kod>659541</kui:Kod></pai:KatastralniUzemi>
+        <pai:PlatiOd>2025-01-10T00:00:00</pai:PlatiOd>
+        <pai:BonitovaneDily><com:BonitovanyDil><com:Vymera>1537</com:Vymera><com:BonitovanaJednotkaKod>1000</com:BonitovanaJednotkaKod></com:BonitovanyDil></pai:BonitovaneDily>
+        <pai:ZpusobyOchranyPozemku><com:ZpusobOchrany><com:Kod>27</com:Kod><com:TypOchranyKod>6</com:TypOchranyKod></com:ZpusobOchrany></pai:ZpusobyOchranyPozemku>
+        <pai:Geometrie>
+          <pai:DefinicniBod><gml:Point><gml:pos>1 1</gml:pos></gml:Point></pai:DefinicniBod>
+          <pai:OriginalniHranice><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>0 0 2 0 2 2 0 0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></pai:OriginalniHranice>
+        </pai:Geometrie>
+      </vf:Parcela>
+      <vf:Parcela gml:id="PA.101">
+        <pai:Id>101</pai:Id><pai:KmenoveCislo>120</pai:KmenoveCislo>
+        <pai:VymeraParcely>80</pai:VymeraParcely>
+        <pai:DruhCislovaniKod>1</pai:DruhCislovaniKod><pai:DruhPozemkuKod>13</pai:DruhPozemkuKod>
+        <pai:KatastralniUzemi><kui:Kod>659541</kui:Kod></pai:KatastralniUzemi>
+        <pai:Geometrie>
+          <pai:OriginalniHranice><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>3 3 4 3 4 4 3 3</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></pai:OriginalniHranice>
+        </pai:Geometrie>
+      </vf:Parcela>
+    </vf:Parcely>
+  </vf:Data>
+</vf:VymennyFormat>
