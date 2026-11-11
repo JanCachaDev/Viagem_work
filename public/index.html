@@ -29,13 +29,20 @@
     </div>
 </header>
 
-<div class="layers" role="group" aria-label="Podkladová mapa">
-    <div class="segmented">
-        <button type="button" data-basemap="osm" aria-pressed="true">Mapa</button>
-        <button type="button" data-basemap="ortofoto" aria-pressed="false">Ortofoto</button>
+<div class="layers" role="group" aria-label="Mapové vrstvy">
+    <button type="button" class="layers-toggle" aria-expanded="false" aria-controls="layers-body">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z" /><path d="M3 13l9 5 9-5" /></svg>
+        <span>Vrstvy</span>
+    </button>
+    <div id="layers-body" class="layers-body">
+        <div class="segmented">
+            <button type="button" data-basemap="osm" aria-pressed="true">Mapa</button>
+            <button type="button" data-basemap="ortofoto" aria-pressed="false">Ortofoto</button>
+        </div>
+        <label class="toggle"><input type="checkbox" id="toggle-kn"> Katastrální mapa ČÚZK</label>
+        <p id="kn-hint" class="hint" hidden>Katastrální mapa se zobrazí po přiblížení.</p>
+        <label class="toggle"><input type="checkbox" id="toggle-fill" checked> Barvy podle druhu</label>
     </div>
-    <label class="toggle"><input type="checkbox" id="toggle-kn"> Katastrální mapa ČÚZK</label>
-    <label class="toggle"><input type="checkbox" id="toggle-fill" checked> Barvy podle druhu</label>
 </div>
 
 <section class="legend" aria-label="Druhy pozemků">
@@ -45,6 +52,7 @@
 </section>
 
 <aside id="detail" class="detail" aria-live="polite" hidden>
+    <button type="button" class="detail-handle" aria-label="Rozbalit detail" aria-expanded="false"></button>
     <button type="button" class="detail-close" aria-label="Zavřít detail">×</button>
     <div id="detail-content"></div>
 </aside>

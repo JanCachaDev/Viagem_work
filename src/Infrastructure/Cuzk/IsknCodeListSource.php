@@ -15,6 +15,18 @@ final readonly class IsknCodeListSource implements CodeListSource
 {
     private const BASE_URL = 'https://services.cuzk.cz/sestavy/cis/';
 
+    /** Číselník ochran má u některých kódů jen zkratky ze starého systému, v detailu parcely jsou nečitelné. */
+    private const READABLE_PROTECTIONS = [
+        3 => 'vnitřní lázeňské území, ložisko slatin a rašeliny, ochranné pásmo 1. stupně',
+        14 => 'ochranné pásmo jiného zvláště chráněného území nebo památného stromu',
+        16 => 'památková rezervace – budova, pozemek v památkové rezervaci',
+        17 => 'památková zóna – budova, pozemek v památkové zóně',
+        19 => 'ochranné pásmo nemovité kulturní památky, památkové zóny, rezervace nebo národní kulturní památky',
+        21 => 'přírodní léčivý zdroj nebo zdroj přírodní minerální vody',
+        22 => 'ochranné pásmo přírodního léčivého zdroje nebo zdroje přírodní minerální vody',
+        23 => 'chráněné ložiskové území, chráněné území pro zvláštní zásahy do zemské kůry',
+    ];
+
     public function __construct(
         private CurlHttpClient $http,
         private string $dataDir,
@@ -35,7 +47,7 @@ final readonly class IsknCodeListSource implements CodeListSource
 
         $protections = [];
         foreach ($this->rows('SC_ZP_OCHRANY_NEM') as $row) {
-            $protections[(int) $row['KOD']] = $row['NAZEV'];
+            $protections[(int) $row['KOD']] = self::READABLE_PROTECTIONS[(int) $row['KOD']] ?? $row['NAZEV'];
         }
 
         $bpejPrices = [];

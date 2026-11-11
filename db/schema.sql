@@ -53,6 +53,7 @@ CREATE TABLE parcels (
 );
 CREATE INDEX parcels_geom_idx ON parcels USING gist (geom);
 CREATE INDEX parcels_number_idx ON parcels (cadastral_area_code, stem, sub);
+CREATE INDEX parcels_stem_idx ON parcels (stem, building_plot, sub);
 CREATE INDEX parcels_area_idx ON parcels (area);
 
 CREATE TABLE district (

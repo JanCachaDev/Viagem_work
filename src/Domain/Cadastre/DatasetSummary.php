@@ -17,4 +17,10 @@ final readonly class DatasetSummary
         public ?BoundingBox $bbox,
     ) {
     }
+
+    /** Mění se s každým importem, takže prohlížeč po importu nepoužije staré dlaždice ze své cache. */
+    public function tileVersion(): string
+    {
+        return $this->importedAt === null ? '0' : substr(sha1($this->importedAt), 0, 8);
+    }
 }

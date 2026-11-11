@@ -12,10 +12,14 @@ export class Search {
         this.active = -1;
         this.timer = null;
         this.request = null;
+        this.selectedText = null;
 
         input.addEventListener('input', () => this.schedule());
         input.addEventListener('keydown', (event) => this.onKey(event));
-        input.addEventListener('focus', () => this.results.length && this.setOpen(true));
+        input.addEventListener('focus', () => {
+            if (this.selectedText !== null && input.value === this.selectedText) input.select();
+            if (this.results.length) this.setOpen(true);
+        });
         document.addEventListener('click', (event) => {
             if (!event.target.closest('.search')) this.setOpen(false);
         });
@@ -89,9 +93,22 @@ export class Search {
     select(index) {
         const hit = this.results[index];
         if (!hit) return;
+        clearTimeout(this.timer);
+        this.request?.abort();
+        this.selectedText = hit.type === 'parcel' ? `${hit.label} · ${hit.detail}` : hit.label;
+        this.input.value = this.selectedText;
         this.setOpen(false);
         this.input.blur();
         this.onSelect(hit);
+    }
+
+    /** Smaže text vybraného výsledku (ne rozepsaný dotaz), když uživatel vybere něco jiného na mapě. */
+    clear() {
+        if (this.selectedText && this.input.value === this.selectedText) {
+            this.input.value = '';
+            this.render([]);
+        }
+        this.selectedText = null;
     }
 
     setOpen(open) {

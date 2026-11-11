@@ -27,6 +27,7 @@ final readonly class MetaController
             'importedAt' => $summary->importedAt,
             'bbox' => $summary->bbox?->toArray(),
             'tiles' => [
+                'version' => $summary->tileVersion(),
                 'maxZoom' => ZoomLevels::MAX,
                 'minParcelZoom' => ZoomLevels::MIN_PARCEL,
             ],

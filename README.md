@@ -108,6 +108,7 @@ Naměřeno lokálně (Docker Desktop, Windows), celý okres:
 | Velikost dlaždice při pohledu na celý okres (z10) | průměr 35 kB, max 185 kB (gzip) |
 | Vykreslených parcel při pohledu na celý okres | ~18 tis. (zbytek je pod 2 px) |
 | Režie PHP požadavku | ~10 ms (OPcache, classmap autoload) |
+| Hledání čísla napříč okresem (`st. 120`), dotaz v DB | 0,14 ms (bez indexu `parcels_stem_idx` 4 ms, za studena 300 ms) |
 
 Jak se k tomu došlo:
 1. **Generalizace podle zoomu** (`PostGisTileProvider`): pod zoomem 14 se vynechávají parcely
@@ -116,6 +117,8 @@ Jak se k tomu došlo:
    (185 kB gzip).
 2. **Dvouúrovňová cache dlaždic** – PHP zapíše dlaždici do `var/cache/tiles/z/x/y.pbf`, nginx ji příště
    servíruje přes `try_files` bez PHP. Zápis je atomický (temp + rename). Import cache maže.
+   URL dlaždic nese verzi importu (`?v=` z `/api/meta`), takže ani prohlížeč po importu nepoužije
+   staré dlaždice ze své cache.
 3. **Kód zapečený do image** + `opcache.validate_timestamps=0` + `--classmap-authoritative` – režie
    PHP klesla ze ~200 ms (bind mount z Windows) na ~10 ms.
 4. **Frontend**: hover přes `feature-state` (bez překreslení dat), filtr druhů přes `setFilter`,
@@ -135,7 +138,7 @@ Jak se k tomu došlo:
 
 ## Testy
 
-`composer test` – 50 testů: převod GML → WKT (vč. oblouků a kružnic), streaming parser VFR
+`composer test` – 52 testů: převod GML → WKT (vč. oblouků a kružnic), streaming parser VFR
 na vzorovém XML, parsování parcelních čísel a vyhledávacích dotazů, BPEJ ocenění, router
 (odmítnutí nečíselných parametrů), cache dlaždic a rate limiter, parsování odpovědí WFS,
 use-case importu a dlaždic s in-memory implementacemi.

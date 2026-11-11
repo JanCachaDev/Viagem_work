@@ -8,12 +8,27 @@ export class DetailPanel {
         this.content = root.querySelector('#detail-content');
         this.onZoomTo = onZoomTo;
         this.request = null;
+        this.handle = root.querySelector('.detail-handle');
         root.querySelector('.detail-close').addEventListener('click', () => onClose());
+        this.handle.addEventListener('click', () => this.setExpanded(!root.classList.contains('expanded')));
+    }
+
+    isOpen() {
+        return !this.root.hidden;
+    }
+
+    /** Na mobilu je detail spodní panel: sbalený ukazuje hlavní údaje, rozbalený celý obsah. */
+    setExpanded(expanded) {
+        this.root.classList.toggle('expanded', expanded);
+        this.handle.setAttribute('aria-expanded', String(expanded));
+        this.handle.setAttribute('aria-label', expanded ? 'Sbalit detail' : 'Rozbalit detail');
     }
 
     async show(id) {
         this.request?.abort();
         this.request = new AbortController();
+        this.setExpanded(false);
+        this.root.scrollTop = 0;
         this.open();
         this.content.replaceChildren(el('p', { class: 'muted' }, 'Načítám parcelu…'));
 

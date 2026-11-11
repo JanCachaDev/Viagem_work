@@ -39,7 +39,7 @@ export function landTypeColorExpression() {
     return expression;
 }
 
-export function buildStyle({ origin, bbox, maxZoom }) {
+export function buildStyle({ origin, bbox, maxZoom, tileVersion }) {
     return {
         version: 8,
         glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
@@ -48,7 +48,7 @@ export function buildStyle({ origin, bbox, maxZoom }) {
             kn: { type: 'raster', tiles: [KN_WMS], tileSize: 512, minzoom: 13, attribution: 'Katastrální mapa © ČÚZK' },
             cadastre: {
                 type: 'vector',
-                tiles: [`${origin}/tiles/{z}/{x}/{y}.pbf`],
+                tiles: [`${origin}/tiles/{z}/{x}/{y}.pbf?v=${encodeURIComponent(tileVersion)}`],
                 minzoom: 8,
                 maxzoom: maxZoom,
                 bounds: bbox ?? undefined,
@@ -65,7 +65,7 @@ export function buildStyle({ origin, bbox, maxZoom }) {
                 'source-layer': 'parcels',
                 paint: {
                     'fill-color': landTypeColorExpression(),
-                    'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.85, 0.6],
+                    'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.75, 0.6],
                 },
             },
             {
@@ -103,7 +103,7 @@ export function buildStyle({ origin, bbox, maxZoom }) {
                 id: 'selection-fill',
                 type: 'fill',
                 source: 'selection',
-                paint: { 'fill-color': '#ff5a1f', 'fill-opacity': 0.18 },
+                paint: { 'fill-color': '#ff5a1f', 'fill-opacity': 0.35 },
             },
             {
                 id: 'selection-outline',
