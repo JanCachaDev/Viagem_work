@@ -189,17 +189,3 @@ srovnání „bonity“ pozemků.
 - **nginx `add_header` se v `location` nedědí** – po přidání `Cache-Control` k assetům zmizela CSP.
   Hlavičky jsou proto ve sdíleném snippetu.
 - CSP zablokovala i `style="…"` vytvořené z JS – barvy legendy se nastavují přes CSSOM.
-
-### S víc časem bych
-
-- **Plánovaný měsíční import** (cron / systemd timer) + import změnových dávek VFR místo celých obcí.
-- **Předgenerované dlaždice do PMTiles** a statický hosting/CDN – backend by pak řešil jen API.
-- **Integrační testy** proti PostGIS v CI (Testcontainers) a e2e testy frontendu (Playwright).
-- **Vlastníci a LV** – přes placenou WSDP službu ČÚZK (dálkový přístup), s cache a auditem.
-- Vlastní **sprite fontů** místo `demotiles.maplibre.org` a self-hosting MapLibre (méně cizích domén v CSP).
-- Výběr více parcel (souhrn výměry a ceny pro balík pozemků), export do CSV.
-- Agregované vrstvy pro velmi nízké zoomy (podíl orné půdy po KÚ) místo vynechávání malých parcel.
-
-### Čas
-
-<!-- Doplň skutečný čas. -->
