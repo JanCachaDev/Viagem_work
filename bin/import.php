@@ -37,6 +37,7 @@ try {
     );
 } catch (Throwable $e) {
     fwrite(STDERR, "Import selhal: {$e->getMessage()}\n");
+    $kernel->logger()->error('Import selhal', ['obce' => $only, 'exception' => $e]);
     exit(1);
 }
 

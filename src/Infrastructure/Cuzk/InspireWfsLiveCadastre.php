@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Cuzk;
 
+use App\Application\Logger;
+use App\Application\NullLogger;
 use App\Domain\Parcel\LiveCadastre;
 use App\Domain\Parcel\LiveCadastreUnavailable;
 use App\Domain\Parcel\LiveParcelState;
@@ -17,8 +19,10 @@ final readonly class InspireWfsLiveCadastre implements LiveCadastre
 {
     private const URL = 'https://services.cuzk.cz/wfs/inspire-cp-wfs.asp';
 
-    public function __construct(private CurlHttpClient $http)
-    {
+    public function __construct(
+        private CurlHttpClient $http,
+        private Logger $logger = new NullLogger(),
+    ) {
     }
 
     public function fetch(int $parcelId): ?LiveParcelState
@@ -34,10 +38,16 @@ final readonly class InspireWfsLiveCadastre implements LiveCadastre
         try {
             $xml = $this->http->get(self::URL . '?' . $query, 8);
         } catch (RuntimeException $e) {
+            $this->logger->warning('WFS ČÚZK neodpovídá', ['parcelId' => $parcelId, 'exception' => $e]);
             throw new LiveCadastreUnavailable('WFS ČÚZK neodpovídá', previous: $e);
         }
 
-        return $this->parse($xml);
+        try {
+            return $this->parse($xml);
+        } catch (LiveCadastreUnavailable $e) {
+            $this->logger->error($e->getMessage(), ['parcelId' => $parcelId, 'response' => mb_strcut($xml, 0, 1000)]);
+            throw $e;
+        }
     }
 
     public function parse(string $xml): ?LiveParcelState

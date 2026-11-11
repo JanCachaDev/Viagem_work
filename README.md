@@ -74,7 +74,7 @@ src/
 ├── Application/     use-cases: GetParcelDetail, SearchParcels, CompareWithLiveCadastre, GetTile,
 │                    WarmTileCache, ImportDistrict (+ porty CadastreSource, CodeListSource, ImportStore)
 ├── Infrastructure/  implementace rozhraní: Persistence (PostGIS), Cuzk (VFR parser, WFS, číselníky),
-│                    Cache (soubory), Http (curl)
+│                    Cache (soubory), Http (curl), Logging (JSON na stderr)
 ├── Http/            Router, Request/Response, controllery, Presenter (doména → JSON)
 ├── Config.php       konfigurace z prostředí
 └── Kernel.php       composition root – jediné místo, kde se skládají závislosti
@@ -130,12 +130,12 @@ Jak se k tomu došlo:
 - Frontend vkládá data výhradně přes `textContent` (žádné `innerHTML`), styly přes CSSOM.
 - nginx: **CSP** (jen vlastní origin + konkrétní mapové služby), `X-Frame-Options`, `nosniff`,
   `Referrer-Policy`, jen `GET` na API, skrytá verze serveru i PHP. MapLibre ze CDN se **SRI hashem**.
-- Chyby se logují, klient dostane jen obecnou hlášku bez stack trace.
+- Chyby se logují (`docker compose logs app`), klient dostane jen obecnou hlášku bez stack trace.
 - Porty DB i webu jsou publikované jen na `127.0.0.1`; hesla jen v `.env` (není v gitu).
 
 ## Testy
 
-`composer test` – 47 testů: převod GML → WKT (vč. oblouků a kružnic), streaming parser VFR
+`composer test` – 50 testů: převod GML → WKT (vč. oblouků a kružnic), streaming parser VFR
 na vzorovém XML, parsování parcelních čísel a vyhledávacích dotazů, BPEJ ocenění, router
 (odmítnutí nečíselných parametrů), cache dlaždic a rate limiter, parsování odpovědí WFS,
 use-case importu a dlaždic s in-memory implementacemi.
@@ -166,6 +166,14 @@ přínosu pro uživatele.
 **Bez frameworku, ale s vrstvami.** Zadání preferuje čisté PHP. Aby to nebyl „jeden index.php“,
 je kód rozdělený na Domain / Application / Infrastructure / Http s rozhraními a jedním composition
 rootem (`Kernel`). Na pohovoru se dá snadno ukázat, kudy jde požadavek.
+
+**Logování jen tam, kde chybí informace.** Každý požadavek i se status kódem a časem už zapisuje
+access log nginxu (včetně 429 z rate limitu), takže PHP loguje jen to, co odtamtud vyčíst nejde:
+neošetřené výjimky (s metodou, cestou a řetězem příčin), výpadek WFS ČÚZK (původní chyba curl, která
+se jinak ztratí v obecném 502), nečekanou odpověď WFS (prvních 1000 znaků, aby byla vidět změna
+schématu) a pád importu se stack trace. Formát je JSON na řádek na stderr, takže to Docker posbírá
+bez konfigurace a dá se to grepovat i poslat do Loki/ELK. Monolog jsem nepřidal: dvě úrovně a jeden
+výstup jsou na pár desítek řádků, rozhraní `Logger` je v aplikační vrstvě a případná výměna je jedna řádka v `Kernel`.
 
 **Bez admin rozhraní.** Data nikdo ručně neupravuje, jediná správcovská akce je import (CLI).
 Admin by znamenal přihlašování, sessions, CSRF – víc útočné plochy bez užitku. Stav dat (datum

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Application\Import\ImportDistrict;
+use App\Application\Logger;
 use App\Application\NotFound;
 use App\Application\Parcel\CompareWithLiveCadastre;
 use App\Application\Parcel\GetParcelDetail;
@@ -30,6 +31,7 @@ use App\Infrastructure\Cuzk\IsknCodeListSource;
 use App\Infrastructure\Cuzk\Vfr\VfrCadastreSource;
 use App\Infrastructure\Cuzk\Vfr\VfrReader;
 use App\Infrastructure\Http\CurlHttpClient;
+use App\Infrastructure\Logging\StderrLogger;
 use App\Infrastructure\Persistence\PdoFactory;
 use App\Infrastructure\Persistence\PostGisCadastreCatalog;
 use App\Infrastructure\Persistence\PostGisImportStore;
@@ -58,7 +60,11 @@ final class Kernel
         } catch (NotFound $e) {
             $response = Response::error(404, $e->getMessage());
         } catch (Throwable $e) {
-            error_log((string) $e);
+            $this->logger()->error('Neošetřená výjimka', [
+                'method' => $request->method,
+                'path' => $request->path,
+                'exception' => $e,
+            ]);
             $response = Response::error(500, 'Interní chyba serveru');
         }
 
@@ -103,6 +109,11 @@ final class Kernel
         return $this->service(CadastreCatalog::class, fn () => new PostGisCadastreCatalog($this->webDb()));
     }
 
+    public function logger(): Logger
+    {
+        return $this->service(Logger::class, fn () => new StderrLogger());
+    }
+
     public function config(): Config
     {
         return $this->config;
@@ -112,7 +123,7 @@ final class Kernel
     {
         $getParcel = new GetParcelDetail($this->parcels());
         $live = new CachedLiveCadastre(
-            new InspireWfsLiveCadastre(new CurlHttpClient()),
+            new InspireWfsLiveCadastre(new CurlHttpClient(), $this->logger()),
             new FileCache($this->config->cacheDir . '/live'),
         );
 
