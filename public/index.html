@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Parcely · okres Jičín</title>
+    <meta name="description" content="Mapa všech parcel okresu Jičín s detailem z katastru nemovitostí.">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"
+          integrity="sha384-MinO0mNliZ3vwppuPOUnGa+iq619pfMhLVUXfC4LHwSCvF9H+6P/KO4Q7qBOYV5V" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<div id="map" aria-label="Mapa parcel"></div>
+
+<header class="toolbar">
+    <div class="brand">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z" /><path d="M9 3v15M15 6v15" /></svg>
+        <div>
+            <strong>Parcely</strong>
+            <span>okres Jičín</span>
+        </div>
+    </div>
+    <div class="search" role="search">
+        <input id="search" type="search" autocomplete="off" spellcheck="false"
+               placeholder="Hledat: Jičín 1854/42, st. 120, Kbelnice…"
+               aria-label="Hledat parcelu nebo katastrální území" aria-controls="search-results" aria-expanded="false">
+        <ul id="search-results" class="search-results" role="listbox" hidden></ul>
+    </div>
+</header>
+
+<div class="layers" role="group" aria-label="Podkladová mapa">
+    <div class="segmented">
+        <button type="button" data-basemap="osm" aria-pressed="true">Mapa</button>
+        <button type="button" data-basemap="ortofoto" aria-pressed="false">Ortofoto</button>
+    </div>
+    <label class="toggle"><input type="checkbox" id="toggle-kn"> Katastrální mapa ČÚZK</label>
+    <label class="toggle"><input type="checkbox" id="toggle-fill" checked> Barvy podle druhu</label>
+</div>
+
+<section class="legend" aria-label="Druhy pozemků">
+    <button type="button" class="legend-toggle" aria-expanded="true">Druhy pozemků</button>
+    <ul id="legend-items"></ul>
+    <p class="dataset" id="dataset-info"></p>
+</section>
+
+<aside id="detail" class="detail" aria-live="polite" hidden>
+    <button type="button" class="detail-close" aria-label="Zavřít detail">×</button>
+    <div id="detail-content"></div>
+</aside>
+
+<div id="zoom-hint" class="zoom-hint" hidden>Přibliž mapu pro zobrazení všech parcel</div>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"
+        integrity="sha384-SYKAG6cglRMN0RVvhNeBY0r3FYKNOJtznwA0v7B5Vp9tr31xAHsZC0DqkQ/pZDmj" crossorigin="anonymous"></script>
+<script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>
