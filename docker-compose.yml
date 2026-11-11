@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-parcely}
+      POSTGRES_USER: ${DB_IMPORT_USER:-parcely}
+      POSTGRES_PASSWORD: ${DB_IMPORT_PASSWORD:?Nastav DB_IMPORT_PASSWORD v .env}
+      DB_USER: ${DB_USER:-parcely_web}
+      DB_PASSWORD: ${DB_PASSWORD:?Nastav DB_PASSWORD v .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./db/web-role.sh:/docker-entrypoint-initdb.d/02-web-role.sh:ro
+    ports:
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      retries: 20
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    env_file: .env
+    environment:
+      DB_DSN: "pgsql:host=db;port=5432;dbname=${POSTGRES_DB:-parcely}"
+    volumes:
+      - appvar:/var/www/var
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    image: nginx:1.27-alpine
+    ports:
+      - "127.0.0.1:${HTTP_PORT:-8080}:80"
+    volumes:
+      - ./public:/var/www/public:ro
+      - appvar:/var/www/var:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/nginx/security-headers.conf:/etc/nginx/snippets/security-headers.conf:ro
+    depends_on:
+      - app
+
+volumes:
+  pgdata:
+  appvar:

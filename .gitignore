@@ -1,0 +1,7 @@
+/vendor/
+/var/
+/.idea/
+/.phpunit.cache/
+/.env
+*.pdf
+/.playwright-mcp/
